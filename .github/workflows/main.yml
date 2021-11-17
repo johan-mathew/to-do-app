@@ -8,17 +8,36 @@ on:
 
 jobs:
   build-and-test:
-      name: Build and Test
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v1
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
 
-        - name: Install dependencies
-          run: yarn
+      - name: Install dependencies
+        run: yarn
 
-        - name: Build
-          run: yarn build
+      - name: Build
+        run: yarn build
 
-        - name: Test
-          run: yarn test --watchAll=false --passWithNoTests
+      - name: Test
+        run: yarn test --watchAll=false --passWithNoTests
+          
+  build-docker-image:
+    name: Build docker image
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{ secrets.AWS_CONTAINER_REGISTRY }}:integration
+
+    - name: Push to ECR
+      id: ecr
+      uses: jwalton/gh-ecr-push@v1
+      with:
+        access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ secrets.AWS_REGION }}
+        image: ${{ secrets.AWS_CONTAINER_REGISTRY }}:integration
+
         
