@@ -39,5 +39,20 @@ jobs:
         secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         region: ${{ secrets.AWS_REGION }}
         image: ${{ secrets.AWS_CONTAINER_REGISTRY }}:integration
+        
+  deploy-to-staging:
+    environment: staging
+    needs: build-docker-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push to ECR
+        uses: jwalton/gh-ecr-push@v1
+        with:
+          access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+          local-image: ${{ secrets.AWS_CONTAINER_REGISTRY }}:integration
+          image: ${{ secrets.AWS_CONTAINER_REGISTRY }}:staging
+
 
         
