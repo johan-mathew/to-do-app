@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration-deployment
+  labels:
+    app: integration-to-do-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: integration-to-do-app
+  template:
+    metadata:
+      labels:
+        app: integration-to-do-app
+    spec:
+      containers:
+      - name: integration-to-do-app
+        image: 230273005112.dkr.ecr.ap-south-1.amazonaws.com/team_3-to-do:integration
+        ports:
+        - containerPort: 80
