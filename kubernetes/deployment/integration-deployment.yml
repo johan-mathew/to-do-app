@@ -4,6 +4,7 @@ metadata:
   name: integration-deployment
   labels:
     app: integration-to-do-app
+  namespace: integration
 spec:
   replicas: 2
   selector:
